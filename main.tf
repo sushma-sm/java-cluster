@@ -37,5 +37,5 @@ resource "helm_release" "grafana" {
 
 output "grafana_url" {
   description = "The external IP address of the Grafana dashboard"
-  value       = "http://${kubernetes_service.grafana.status[0].load_balancer[0].ingress[0].ip}:3000"
+  value       = "http://$(kubectl get svc -n ${var.namespace} -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}'):3000"
 }
