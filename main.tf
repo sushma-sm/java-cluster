@@ -32,5 +32,5 @@ resource "helm_release" "grafana" {
 
 output "grafana_url" {
   description = "The external IP address of the Grafana dashboard"
-  value       = "http://${helm_release.grafana.status.0.load_balancer.0.ingress.0.ip}:3000"
+  value       =  "http://${lookup(helm_release.grafana.status.0.load_balancer.0.ingress.0, "ip", "localhost")}:3000"
 }
