@@ -6,19 +6,19 @@ resource "kubernetes_namespace" "monitoring" {
 
 resource "helm_release" "prometheus" {
   name       = "prometheus"
-  namespace  = kubernetes_namespace.monitoring.metadata[0].name
-  chart      = "prometheus-community/kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "70.0.2"  # Update this to the correct version
+  chart      = "kube-prometheus-stack"
+  version    = "70.0.2"  # Ensure this matches a valid version
+  namespace  = "monitoring"
 }
 
 resource "helm_release" "grafana" {
   name       = "grafana"
-  namespace  = kubernetes_namespace.monitoring.metadata[0].name
-  chart      = "grafana/grafana"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "6.56.2"  # Update this to the correct version
-
+  chart      = "grafana"
+  version    = "8.10.4"  # Replace with a valid Grafana chart version
+  namespace  = "monitoring"
+}
   set {
     name  = "service.type"
     value = "LoadBalancer"
