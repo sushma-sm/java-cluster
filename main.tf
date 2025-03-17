@@ -9,12 +9,6 @@ resource "helm_release" "prometheus" {
   namespace  = kubernetes_namespace.monitoring.metadata[0].name
   chart      = "prometheus-community/kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "70.0.2"
-
-  set {
-    name  = "prometheus.service.type"
-    value = "LoadBalancer"
-  }
 }
 
 resource "helm_release" "grafana" {
@@ -22,7 +16,6 @@ resource "helm_release" "grafana" {
   namespace  = kubernetes_namespace.monitoring.metadata[0].name
   chart      = "grafana/grafana"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "6.56.2"
 
   set {
     name  = "service.type"
@@ -37,5 +30,5 @@ resource "helm_release" "grafana" {
 
 output "grafana_url" {
   description = "The external IP address of the Grafana dashboard"
-  value       = "http://$(kubectl get svc -n ${var.namespace} -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}'):3000"
+  value       = "http://${helm_release.grafana.name}.monitoring.svc.cluster.local:3000"
 }
